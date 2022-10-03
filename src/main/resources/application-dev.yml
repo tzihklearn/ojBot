@@ -1,0 +1,107 @@
+server:
+  port: 38085
+
+spring:
+  http-client:
+    pool:
+      #连接池的最大连接数，0代表不限；如果取0，需要考虑连接泄露导致系统崩溃的后果
+      maxTotalConnect: 1000
+      #每个路由的最大连接数,如果只调用一个地址,可以将其设置为最大连接数
+      maxConnectPerRoute: 200
+      # 指客户端和服务器建立连接的超时时间,ms , 最大约21秒,因为内部tcp在进行三次握手建立连接时,默认tcp超时时间是20秒
+      connectTimeout: 3000
+      # 指客户端从服务器读取数据包的间隔超时时间,不是总读取时间,也就是socket timeout,ms
+      readTimeout: 5000
+      # 从连接池获取连接的timeout,不宜过大,ms
+      connectionRequestTimout: 200
+      # 重试次数
+      retryTimes: 3
+      charset: UTF-8
+      # 长连接保持时间 单位s,不宜过长
+      keepAliveTime: 1000000
+      keepAliveTargetHost:
+        www.baidu.com: 1000000
+
+#  datasource:
+#    driver-class-name: com.mysql.cj.jdbc.Driver
+#    url: jdbc:mysql://127.0.0.1:3300/mmt?useUnicode=true&characterEncoding=UTF-8&serverTimezone=GMT%2B8
+#    username: root
+#    password: 123456
+##    url: jdbc:mysql://127.0.0.1:3300/mmt?useUnicode=true&characterEncoding=UTF-8&serverTimezone=GMT%2B8
+##    username: root
+##    password: 123456
+#  redis:
+#    host: 43.142.146.75
+#    port: 6379
+#    password: 123456
+#    connect-timeout: 10000
+##    jedis:
+##      pool:
+##        # 连接池最大连接数，若为负数则表示没有任何限制
+##        max-active: 8
+##        # 连接池最大阻塞等待时间，若为负数则表示没有任何限制
+##        max-wait: -1
+##        # 连接池中的最大空闲连接
+##        max-idle: 8
+
+lark-robot:
+  dev: false
+#  url: https://open.feishu.cn/open-apis/bot/v2/hook/0ec2dc49-0af4-4aae-a9a2-829f13a93b4f
+  profile: dev
+logging:
+  level:
+    com.sipc.mmtbackend.mapper: debug
+
+maomao:
+  students:
+    1:
+      - "22-何智博"
+      - "22-李卓然"
+      - "22-孙贤为"
+      - "22-赵滟清"
+      - "22-邱琬月"
+      - "22-王嘉泽"
+      - "22-李佳诚"
+      - "22-周加得"
+    2:
+      - "22-白佳明"
+      - "22-陈展"
+      - "22-高鹏宇"
+      - "22-马一飞"
+      - "22-张文轩"
+      - "22-张馨墨"
+      - "22-周宇洋"
+      - "22-吴雨航"
+problem:
+  problems:
+    1:
+      - 1
+      - 2
+      - 3
+      - 4
+      - 5
+      - 6
+      - 7
+      - 8
+      - 9
+      - 10
+    2:
+      - 1
+      - 2
+      - 3
+      - 4
+      - 5
+      - 6
+      - 7
+      - 8
+      - 9
+      - 10
+
+root-url:
+  url:
+    1: https://open.feishu.cn/open-apis/bot/v2/hook/0ec2dc49-0af4-4aae-a9a2-829f13a93b4f
+
+q-group:
+  QGroup:
+    "877141334": 1
+    "591981450": 2
