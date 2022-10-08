@@ -1,6 +1,7 @@
 package com.example.ojbot.utils.root;
 
-import com.example.ojbot.pojo.dto.param.RootUrl;
+import com.example.ojbot.mapper.AllGroupMapper;
+import com.example.ojbot.pojo.dto.AllGroup;
 import com.example.ojbot.utils.request.RequestUtils;
 import com.example.ojbot.utils.request.dto.Param;
 import lombok.Data;
@@ -9,6 +10,9 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
 import javax.annotation.Resource;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author tzih
@@ -26,12 +30,15 @@ public class LarkRoot {
     
     private String profile;
 
-//    @Autowired
-//    private RestTemplate restTemplate;
-    private static RestTemplate restTemplate = new RestTemplate();
+    @Resource
+    private RestTemplate restTemplate;
+//    private static RestTemplate restTemplate = new RestTemplate();
+
+//    @Resource
+//    private RootUrl rootUrl;
 
     @Resource
-    private RootUrl rootUrl;
+    private AllGroupMapper allGroupMapper;
     
 
     public void setDev(Boolean dev) {
@@ -49,8 +56,21 @@ public class LarkRoot {
 
 
     public void sendMessage(Object message, Integer id) {
-        this.url = rootUrl.getUrl().get(id);
-        if ( !dev) {
+
+        Map<String, Object> map = new HashMap<>();
+
+        map.put("group_id", id);
+
+        List<AllGroup> allGroups = allGroupMapper.selectByMap(map);
+
+        if (allGroups == null) {
+            return;
+        }
+
+        AllGroup allGroup = allGroups.get(0);
+
+        this.url = allGroup.getGroupRoot();
+        if ( !dev && url != null) {
 
             System.out.println("ok");
             System.out.println(url);
@@ -65,10 +85,10 @@ public class LarkRoot {
 
             for (i = 0; i < split.length; ++i) {
                 if (i != split.length -1) {
-                    stringBuilder.append("[{\"tag\":\"text\",\"text\":\""+split[i] +"\"}],");
+                    stringBuilder.append("[{\"tag\":\"text\",\"text\":\"").append(split[i]).append("\"}],");
                 }
                 else {
-                    stringBuilder.append("[{\"tag\":\"text\",\"text\":\""+split[i] +"\"}]");
+                    stringBuilder.append("[{\"tag\":\"text\",\"text\":\"").append(split[i]).append("\"}]");
                 }
             }
             stringBuilder.append("]}}");
@@ -89,6 +109,13 @@ public class LarkRoot {
 //            System.out.println(text);
             System.out.println(post);
             System.out.println("post ok");
+
+            RequestUtils.POST(
+                    "https://open.feishu.cn/open-apis/bot/v2/hook/0ec2dc49-0af4-4aae-a9a2-829f13a93b4f",
+                    new Param(
+                            "content", "{\"text\":\"" + "向id为" +allGroup.getId() + "的组发送消息" + "\"}",
+                            "msg_type", "text"
+                    ));
         }
 
     }

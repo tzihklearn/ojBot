@@ -1,6 +1,10 @@
 package com.example.ojbot.service.impl;
 
+import cn.hutool.json.JSONArray;
+import cn.hutool.json.JSONObject;
+import com.example.ojbot.mapper.AllGroupMapper;
 import com.example.ojbot.pojo.CommonResult;
+import com.example.ojbot.pojo.dto.AllGroup;
 import com.example.ojbot.pojo.dto.param.GroupList;
 import com.example.ojbot.pojo.dto.param.ProblemList;
 import com.example.ojbot.pojo.dto.param.UserList;
@@ -11,7 +15,7 @@ import com.example.ojbot.service.rankService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import net.minidev.json.JSONObject;
+
 
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -45,6 +49,9 @@ public class rankServiceImpl implements rankService {
     @Resource
     private GroupList groupList;
 
+    @Resource
+    private AllGroupMapper allGroupMapper;
+
     @Override
     public String rank(Integer id) {
 
@@ -64,16 +71,48 @@ public class rankServiceImpl implements rankService {
 //        students.add("22-王嘉泽");
 //        students.add("22-赵滟清");
 //        students.add("22-周加得");
+        Map<String, Object> key = new HashMap<>();
+        key.put("id", id);
+        List<AllGroup> allGroups = allGroupMapper.selectByMap(key);
+//        System.out.println(allGroups);
+        if (allGroups == null) {
+            return null;
+        }
+//        System.out.println(allGroups.toArray());
+//        Integer id = groupList.getQGroup().get(qid);
+        AllGroup allGroup = allGroups.get(0);
+//        Integer id = allGroup.getGroupId();
+//        if (id == null) {
+//            return CommonResult.fail("没有该组");
+//        }
 
-        Set<String> students = userList.getStudents().get(1);
+//        Set<String> students = userList.getStudents().get(id);
+        JSONObject jsonMember = new JSONObject(allGroup.getGroupMember());
+        if (jsonMember.isEmpty()) {
+            return null;
+        }
+        JSONArray groupMember = (JSONArray)jsonMember.get("name");
+        List<String> students = groupMember.toList(String.class);
+        if (students == null) {
+            return null;
+        }
 
-
-//        Set<Integer> week = new HashSet<>();
+//        Set<Integer> week = problemList.getProblems().get(id);
+        JSONObject jsonProblem = new JSONObject(allGroup.getGroupProblem());
+        if (jsonProblem.isEmpty()) {
+            return null;
+        }
+        JSONArray groupProblem = (JSONArray)jsonProblem.get("problem");
+        List<Integer> week = groupProblem.toList(Integer.class);
+//        Set<String> students = userList.getStudents().get(1);
 //
-//        week.add(1);
-//        week.add(2);
-
-        Set<Integer> week = problemList.getProblems().get(id);
+//
+////        Set<Integer> week = new HashSet<>();
+////
+////        week.add(1);
+////        week.add(2);
+//
+//        Set<Integer> week = problemList.getProblems().get(id);
 
         List<FinalResult> results = new ArrayList<>();
         for (String student : students) {
@@ -154,7 +193,41 @@ public class rankServiceImpl implements rankService {
     @Override
     public CommonResult<List<FinalResult>> rankQQ(Integer id) {
 
-        System.out.println(restTemplate.hashCode());
+//        System.out.println(restTemplate.hashCode());
+
+        Map<String, Object> key = new HashMap<>();
+        key.put("group_id", id);
+        List<AllGroup> allGroups = allGroupMapper.selectByMap(key);
+//        System.out.println(allGroups);
+        if (allGroups == null) {
+            return CommonResult.fail("没有该组");
+        }
+//        System.out.println(allGroups.toArray());
+//        Integer id = groupList.getQGroup().get(qid);
+        AllGroup allGroup = allGroups.get(0);
+//        Integer id = allGroup.getGroupId();
+//        if (id == null) {
+//            return CommonResult.fail("没有该组");
+//        }
+
+//        Set<String> students = userList.getStudents().get(id);
+        JSONObject jsonMember = new JSONObject(allGroup.getGroupMember());
+        if (jsonMember.isEmpty()) {
+            return CommonResult.fail();
+        }
+        JSONArray groupMember = (JSONArray)jsonMember.get("name");
+        List<String> students = groupMember.toList(String.class);
+        if (students == null) {
+            return CommonResult.fail("该组没有成员");
+        }
+
+//        Set<Integer> week = problemList.getProblems().get(id);
+        JSONObject jsonProblem = new JSONObject(allGroup.getGroupProblem());
+        if (jsonProblem.isEmpty()) {
+            return CommonResult.fail();
+        }
+        JSONArray groupProblem = (JSONArray)jsonProblem.get("problem");
+        List<Integer> week = groupProblem.toList(Integer.class);
 
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
@@ -164,14 +237,14 @@ public class rankServiceImpl implements rankService {
 //        httpHeaders.set("Cookie" ,"sessionid=uf9rll17uh6de5gyk95vygc0ymycgmal");
 
 
-        Set<String> students = userList.getStudents().get(id);
-        if (students == null) {
-            return CommonResult.fail("没有该组");
-        }
-        Set<Integer> week = problemList.getProblems().get(id);
-        if (week == null) {
-            return CommonResult.fail("没有该组");
-        }
+//        Set<String> students = userList.getStudents().get(id);
+//        if (students == null) {
+//            return CommonResult.fail("没有该组");
+//        }
+//        Set<Integer> week = problemList.getProblems().get(id);
+//        if (week == null) {
+//            return CommonResult.fail("没有该组");
+//        }
         List<FinalResult> results = new ArrayList<>();
         long t = new Date().getTime();
         for (String student : students) {
@@ -245,10 +318,40 @@ public class rankServiceImpl implements rankService {
     @Override
     public CommonResult<List<FinalResult>> rankQQGroup(String qid) {
 
-        Integer id = groupList.getQGroup().get(qid);
-        if (id == null) {
+        Map<String, Object> key = new HashMap<>();
+        key.put("group_qq", qid);
+        List<AllGroup> allGroups = allGroupMapper.selectByMap(key);
+//        System.out.println(allGroups);
+        if (allGroups == null) {
             return CommonResult.fail("没有该组");
         }
+//        System.out.println(allGroups.toArray());
+//        Integer id = groupList.getQGroup().get(qid);
+        AllGroup allGroup = allGroups.get(0);
+//        Integer id = allGroup.getGroupId();
+//        if (id == null) {
+//            return CommonResult.fail("没有该组");
+//        }
+
+//        Set<String> students = userList.getStudents().get(id);
+        JSONObject jsonMember = new JSONObject(allGroup.getGroupMember());
+        if (jsonMember.isEmpty()) {
+            return CommonResult.fail("改组没有成员");
+        }
+        JSONArray groupMember = (JSONArray)jsonMember.get("name");
+        List<String> students = groupMember.toList(String.class);
+        if (students == null) {
+            return CommonResult.fail("该组没有成员");
+        }
+
+//        Set<Integer> week = problemList.getProblems().get(id);
+        JSONObject jsonProblem = new JSONObject(allGroup.getGroupProblem());
+        if (jsonProblem.isEmpty()) {
+            return CommonResult.fail("改组没有问题");
+        }
+        JSONArray groupProblem = (JSONArray)jsonProblem.get("problem");
+        List<Integer> week = groupProblem.toList(Integer.class);
+
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 
@@ -257,9 +360,7 @@ public class rankServiceImpl implements rankService {
 //        httpHeaders.set("Cookie" ,"sessionid=uf9rll17uh6de5gyk95vygc0ymycgmal");
 
 
-        Set<String> students = userList.getStudents().get(id);
 
-        Set<Integer> week = problemList.getProblems().get(id);
 
         List<FinalResult> results = new ArrayList<>();
         long t = new Date().getTime();

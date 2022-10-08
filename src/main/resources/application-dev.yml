@@ -22,18 +22,16 @@ spring:
       keepAliveTargetHost:
         www.baidu.com: 1000000
 
-#  datasource:
-#    driver-class-name: com.mysql.cj.jdbc.Driver
-#    url: jdbc:mysql://127.0.0.1:3300/mmt?useUnicode=true&characterEncoding=UTF-8&serverTimezone=GMT%2B8
-#    username: root
-#    password: 123456
-##    url: jdbc:mysql://127.0.0.1:3300/mmt?useUnicode=true&characterEncoding=UTF-8&serverTimezone=GMT%2B8
-##    username: root
-##    password: 123456
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+#    url: jdbc:mysql://127.0.0.1:3300/ojbot?useUnicode=true&characterEncoding=UTF-8&serverTimezone=GMT%2B8
+#    username:
+#    password:
+
 #  redis:
-#    host: 43.142.146.75
-#    port: 6379
-#    password: 123456
+#    host:
+#    port:
+#    password:
 #    connect-timeout: 10000
 ##    jedis:
 ##      pool:
@@ -46,7 +44,7 @@ spring:
 
 lark-robot:
   dev: false
-#  url: https://open.feishu.cn/open-apis/bot/v2/hook/0ec2dc49-0af4-4aae-a9a2-829f13a93b4f
+  url:
   profile: dev
 logging:
   level:
@@ -55,53 +53,21 @@ logging:
 maomao:
   students:
     1:
-      - "22-何智博"
-      - "22-李卓然"
-      - "22-孙贤为"
-      - "22-赵滟清"
-      - "22-邱琬月"
-      - "22-王嘉泽"
-      - "22-李佳诚"
-      - "22-周加得"
+      -
     2:
-      - "22-白佳明"
-      - "22-陈展"
-      - "22-高鹏宇"
-      - "22-马一飞"
-      - "22-张文轩"
-      - "22-张馨墨"
-      - "22-周宇洋"
-      - "22-吴雨航"
+      -
 problem:
   problems:
     1:
-      - 1
-      - 2
-      - 3
-      - 4
-      - 5
-      - 6
-      - 7
-      - 8
-      - 9
-      - 10
+      -
     2:
       - 1
-      - 2
-      - 3
-      - 4
-      - 5
-      - 6
-      - 7
-      - 8
-      - 9
-      - 10
 
 root-url:
   url:
-    1: https://open.feishu.cn/open-apis/bot/v2/hook/0ec2dc49-0af4-4aae-a9a2-829f13a93b4f
+    1:
 
 q-group:
   QGroup:
-    "877141334": 1
-    "591981450": 2
+    "877141334":
+    "591981450":

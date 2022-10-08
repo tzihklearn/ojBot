@@ -1,12 +1,16 @@
 package com.example.ojbot.utils;
 
 import com.example.ojbot.controller.StudentRankController;
+import com.example.ojbot.mapper.AllGroupMapper;
+import com.example.ojbot.pojo.dto.AllGroup;
 import com.example.ojbot.pojo.dto.param.GroupList;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -23,13 +27,24 @@ public class TaskTimeWork {
     @Resource
     private GroupList groupList;
 
-    @Scheduled(cron = "0 0 12,18,23 * * ?")
+    @Resource
+    private AllGroupMapper allGroupMapper;
+
+    @Scheduled(cron = "0 0 18 * * ?")
     public void schedule() {
 //        studentRankController.rank();
-        Map<String, Integer> qGroup = groupList.getQGroup();
+//        Map<String, Integer> qGroup = groupList.getQGroup();
 
-        studentRankController.rank(1);
         log.info("定时发送");
+        List<AllGroup> allGroups = allGroupMapper.selectList(null);
+
+        for (AllGroup allGroup : allGroups) {
+            if (allGroup.getGroupId() != null && allGroup.getGroupRoot() != null) {
+                studentRankController.rank(allGroup.getGroupId());
+            }
+        }
+
+
     }
 
 //    @Scheduled(fixedDelay = 1, timeUnit = TimeUnit.DAYS)

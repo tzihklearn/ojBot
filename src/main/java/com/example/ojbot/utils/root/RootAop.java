@@ -22,11 +22,23 @@ public class RootAop {
 
     }
 
+//    @Pointcut("execution(* *..controller.*.*(..))")
+//    public void lark() {
+//
+//    }
+
     @AfterReturning(pointcut = "lark(id)", returning = "returnObject", argNames = "joinPoint,returnObject,id")
     public void After(JoinPoint joinPoint, Object returnObject, Integer id) {
-        System.out.println("aop");
-        System.out.println("return"+returnObject);
-        larkRoot.sendMessage(returnObject, id);
+        if (returnObject != null) {
+            System.out.println("aop");
+            System.out.println("return"+returnObject);
+            larkRoot.sendMessage(returnObject, id);
+        }
     }
+
+
+//
+//    @AfterThrowing(pointcut = "lark()",)
+//    public void
 
 }
